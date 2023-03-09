@@ -23,11 +23,15 @@ io.on('connection', (socket) => {
 
 socket.on("new-room", (roomId) => {
   rooms.set(roomId, socket.id)
-  console.log(roomId)
+  console.log(rooms)
+  socket.emit("new-msg", "welcome to HappyTappers, invite people you know to play!")
 });
-    
-const { roomId } = socket.handshake.query;
-socket.join(roomId)
+   socket.on("join-room", (roomId)=>(
+    socket.join(roomId),
+    socket.emit("join-msg", "welcome to HappyTappers")
+   )) 
+
+
    
     
    
