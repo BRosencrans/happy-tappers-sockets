@@ -1,24 +1,35 @@
-const app = require('express')();
-const http = require('http').createServer(app);
+const app = require('express');
+const http = require('http')
 const PORT = 8080;
-const  generateId  = require('utils.js')
-const io = require('socket.io')(http,{ 
+
+const  { Server } = require ('socket.io')
+
+
+const server = http.createServer(app);
+global.rooms= new Map()
+
+
+const io = new Server (server,{ 
     cors: {
     origin: "http://localhost:3000",
-    methods: ["GET", "POST"]
+    
   }});
 
-http.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`listening on *:${PORT}`);
 });
 
-io.on('connection', (socket) => { /* socket object may be used to send specific messages to the new connected client */
-    console.log('new client connected');
+io.on('connection', (socket) => { 
+
+socket.on("new-room", (roomId) => {
+  rooms.set(roomId, socket.id)
+  console.log(roomId)
+});
+    
+const { roomId } = socket.handshake.query;
+socket.join(roomId)
    
-    socket.on('newGame', () => {
-      const id = generateId();
-      socket.join(id);
-      const room = roomRoutes.addRoom(id, socket.id, 4);
-      io.to(id).emit('newGame', room);
-    });
+    
+   
+    
 });
