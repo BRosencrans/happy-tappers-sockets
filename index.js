@@ -22,18 +22,20 @@ server.listen(PORT, () => {
 io.on('connection', (socket) => { 
 
 socket.on("new-room", (roomId) => {
-  rooms.set(roomId, socket.id)
+  rooms.set(roomId,socket.id)
   console.log(rooms)
   socket.emit("new-msg", "welcome to HappyTappers, invite people you know to play!")
 });
-   socket.on("join-room", (roomId)=>(
-    socket.join(roomId),
-    socket.emit("join-msg", "welcome to HappyTappers")
-   )) 
-
-
-   
+   socket.on("join-room", (roomId)=>{
+    console.log(rooms)
+  const roomData= rooms.has(roomId)
+  console.log(roomData)
+    if(roomData){
+      socket.join(roomId),
+      socket.emit("join-msg", "welcome to HappyTappers")
+     }
+    else{socket.emit("wrong-way", "try another room")}
     
-   
+   } ) 
     
 });
