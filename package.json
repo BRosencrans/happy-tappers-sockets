@@ -1,26 +1,27 @@
 {
-  "name": "happy-tappers-sockets",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BRosencrans/happy-tappers-sockets.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/BRosencrans/happy-tappers-sockets/issues"
-  },
-  "homepage": "https://github.com/BRosencrans/happy-tappers-sockets#readme",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "socket.io": "^4.6.1"
-  }
+    "name": "happy-tappers-sockets",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/BRosencrans/happy-tappers-sockets.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/BRosencrans/happy-tappers-sockets/issues"
+    },
+    "homepage": "https://github.com/BRosencrans/happy-tappers-sockets#readme",
+    "dependencies": {
+        "@socket.io/admin-ui": "^0.5.1",
+        "cors": "^2.8.5",
+        "express": "^4.18.2",
+        "socket.io": "^4.6.1"
+    }
 }
