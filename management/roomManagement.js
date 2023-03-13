@@ -26,11 +26,11 @@ class RoomManagement {
     addUser(roomId, user) {
         const room = this.getRoom(roomId);
 
-        if (room.Users.length >= room.maxUsers) {
+        if (room.users.length >= room.maxUsers) {
             return false;
         }
 
-        room.Users.push(user);
+        room.users.push(user);
     }
 
     removeUser(roomId, userId) {
@@ -55,7 +55,7 @@ class RoomManagement {
     //     player.isReady = playerIsReady;
     // }
 
-    addToUserscore(roomId, userId, score) {
+    addToUserScore(roomId, userId, score) {
         const room = this.getRoom(roomId);
         const user = room.users.filter((user) => user.userId == userId)[0];
 

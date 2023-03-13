@@ -17,3 +17,5 @@ const generateId = () => {
 };
 
 module.exports = { generateId };
+
+//TODO: to be deleted since we are letting players create their own room code.
