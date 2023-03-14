@@ -1,15 +1,5 @@
-const cards = [
-    { src: "/cards/budgie.png" },
-    { src: "/cards/crane.png" },
-    { src: "/cards/duck.png" },
-    { src: "/cards/flamingo.png" },
-    { src: "/cards/parrot.png" },
-    { src: "/cards/penguin.png" },
-    { src: "/cards/toucan.png" },
-];
-
 class memGameManagement {
-    constructor(players) {
+    constructor(players, cards) {
         this.timer = 60;
         this.cards = this.shuffle([...cards, ...cards].map((card) => ({ ...card })));
         this.players = players;
