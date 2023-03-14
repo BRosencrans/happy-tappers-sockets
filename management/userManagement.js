@@ -3,7 +3,8 @@ class userManagement {
         this.users = [];
     }
 
-    addUser({ userId, roomId, socketId, username }) {
+    addUser(userId, roomId, socketId, username) {
+        console.log("adding user " + userId);
         const user = {
             userId,
             roomId,

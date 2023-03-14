@@ -1,61 +1,111 @@
-const { userManagement, roomManagement, memGameManagement } = require("./management/index");
+const { userManagement, roomManagement, memGameManagment } = require("./management/index");
 
 const rooms = new roomManagement();
 const users = new userManagement();
+
+const cards = [
+    { src: "/cards/budgie.png" },
+    { src: "/cards/crane.png" },
+    { src: "/cards/duck.png" },
+    { src: "/cards/flamingo.png" },
+    { src: "/cards/parrot.png" },
+    { src: "/cards/penguin.png" },
+    { src: "/cards/toucan.png" },
+];
 
 function eventListeners(io) {
     io.on("connection", (socket) => {
         console.log("Socket id: " + socket.id);
 
         //Room Creation
-        socket.on("new-room", (roomId) => {
+        socket.on("new-room", ({ roomId, username, userId }) => {
             rooms.addRoom(roomId, socket.id, 4);
             console.log("current rooms", rooms);
             socket.emit("room-created", "welcome to HappyTappers, invite people you know to play!");
+            // add user to new room
+            socket.join(roomId);
+            const newUser = users.addUser(userId, roomId, socket.id, username);
+            rooms.addUser(roomId, newUser);
+            console.log(rooms.getRoom(roomId));
         });
 
         //User Joining Room
         socket.on("join-room", ({ roomId, username, userId }) => {
+            console.log("room being joined", roomId);
             if (rooms.roomExists(roomId) == false) {
                 io.to(socket.id).emit("join-room-error", "Room not found.");
             }
-            socket.join(roomId);
+
             const room = rooms.getRoom(roomId);
-            console.log("room being joined", room);
             if (rooms.getUsers(roomId).length >= room.maxUsers) {
                 io.to(socket.id).emit("join-room-error", "Room has max users.");
             }
+            // check for if user exists in room already
 
-            const newUser = users.addUser({ userId, roomId, socketId: socket.id, username });
+            socket.join(roomId);
+            console.log("current rooms", rooms);
+            socket.to(roomId).emit("joined-room", {
+                message: `${username} joined the room.`,
+                username: "SYSTEM",
+            });
+            const newUser = users.addUser(userId, roomId, socket.id, username);
             rooms.addUser(roomId, newUser);
             console.log("room after user joined", room);
-            io.to(room.socketId).emit("user-num-changed", rooms.getUsers(roomId));
-            io.to(socket.id).emit("joined-room");
+            io.in(roomId).emit("user-num-changed", rooms.getUsers(roomId));
+            // io.emit("user-num-changed"), rooms.getUsers(roomId);
         });
 
         //Leaving Room
         socket.on("leave-room", ({ roomId, userId }) => {
-            if (rooms.getRoom(roomId) != null) {
-                rooms.removeUser(roomId, userId);
-                const room = rooms.getRoom(roomId);
-                if (rooms.getUsers(roomId).length == 0) {
-                    rooms.removeRoom(roomId);
-                    console.log("rooms after empty room deleted", rooms);
-                }
-                io.to(room.socketId).emit("user-num-changed", rooms.getUsers(roomId));
-                socket.leave(roomId);
-                io.to(roomId).emit("left-room", `user ${socket.id} has left the room`);
+            console.log("LEAVE ROOM");
+            console.log("does the room exist", rooms.roomExists(roomId));
+            console.log("roomManagement", rooms);
+            console.log("roomId", roomId);
+            console.log("userId", userId[0]);
+
+            //cannot remove from constructed classes. will need to implement another way. maybe delete the room on leave?
+
+            rooms.removeUser(socket.id);
+            const usersArr = rooms.getUsers(roomId);
+            console.log("users left in room", usersArr);
+            io.to(roomId).emit("user-num-changed", usersArr);
+            if (rooms.getUsers(roomId).length == 0) {
+                rooms.removeRoom(roomId);
+                console.log("rooms after empty room deleted", rooms);
             }
+            socket.leave(roomId);
+            io.to(roomId).emit("left-room", `user ${socket.id} has left the room`);
+            // }
         });
 
         //Returning Room data updates
-        socket.on("request-room-data", (roomId) => {
-            const room = rooms.getRoom(roomId);
-            let roomUsers;
-            if (rooms.getUsers(roomId) != null) {
-                roomUsers = rooms.getUsers(roomId);
+        socket.on("request-room-data-joinroom", (roomId) => {
+            console.log("request on join button");
+            if (rooms.roomExists(roomId)) {
+                const room = rooms.getRoom(roomId);
+                io.to(socket.id).emit("returned-room-data", { room });
+            } else {
+                io.to(socket.id).emit("returned-room-data", false);
             }
-            io.to(roomId).emit("returned-room-data", { room, roomUsers });
+        });
+
+        socket.on("request-room-data", (roomId) => {
+            console.log("request in room");
+            if (rooms.roomExists(roomId)) {
+                const room = rooms.getRoom(roomId);
+                io.to(socket.id).emit("returned-room-data", { room });
+            } else {
+                io.to(socket.id).emit("returned-room-data", false);
+            }
+        });
+
+        //game logic
+        socket.on("start-game", (roomId) => {
+            const memGame = new memGameManagment(rooms.getUsers(roomId));
+        });
+
+        socket.on("disconnect", () => {
+            rooms.removeUser(socket.id);
         });
     });
 }

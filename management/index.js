@@ -5,4 +5,5 @@ const memGameManagment = require("./memGameManagement");
 module.exports = {
     roomManagement,
     userManagement,
+    memGameManagment,
 };
