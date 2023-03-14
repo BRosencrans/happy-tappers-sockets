@@ -12,7 +12,7 @@ const eventListeners = require("./eventListeners");
 // TODO: Change from localhost to deployed when ready
 const io = new Server(server, {
     cors: {
-        origin: ["https://main--happytappers.netlify.app", "https://admin.socket.io/"],
+        origin: ["https://happytappers.netlify.app/", "https://admin.socket.io/"],
         credentials: true,
     },
 });
