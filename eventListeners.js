@@ -58,24 +58,23 @@ function eventListeners(io) {
         //Leaving Room
         socket.on("leave-room", ({ roomId, userId }) => {
             console.log("LEAVE ROOM");
-            console.log("does the room exist", rooms.roomExists(roomId));
-            console.log("roomManagement", rooms);
-            console.log("roomId", roomId);
-            console.log("userId", userId[0]);
-
-            //cannot remove from constructed classes. will need to implement another way. maybe delete the room on leave?
-
-            rooms.removeUser(socket.id);
+            // console.log("does the room exist", rooms.roomExists(roomId));
+            // console.log("roomManagement", rooms);
+            // console.log("roomId", roomId);
+            // console.log("userId", userId[0]);
+            console.log(roomId, userId[0]);
+            // rooms.removeUser(socket.id);
+            rooms.removeUser(roomId, userId[0]);
             const usersArr = rooms.getUsers(roomId);
             console.log("users left in room", usersArr);
-            io.to(roomId).emit("user-num-changed", usersArr);
+            io.in(roomId).emit("user-num-changed", usersArr);
+            socket.leave(roomId);
             if (rooms.getUsers(roomId).length == 0) {
                 rooms.removeRoom(roomId);
-                console.log("rooms after empty room deleted", rooms);
+                // console.log("rooms after empty room deleted", rooms);
             }
-            socket.leave(roomId);
-            io.to(roomId).emit("left-room", `user ${socket.id} has left the room`);
-            // }
+
+            // io.in(roomId).emit("left-room", `user ${socket.id} has left the room`);
         });
 
         //Returning Room data updates
