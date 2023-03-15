@@ -1,6 +1,6 @@
 const app = require("express");
 const http = require("http");
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 const { Server } = require("socket.io");
 const { instrument } = require("@socket.io/admin-ui");
