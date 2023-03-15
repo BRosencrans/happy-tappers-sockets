@@ -99,7 +99,7 @@ function eventListeners(io) {
             }
         });
         socket.on('send_message', (data) => {
-            const { message, username, room, } = data;
+            const { message, username, roomid, } = data;
             io.in(room).emit('receive_message', data); // Send to all users in room, including sender
         
           });
