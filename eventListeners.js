@@ -97,9 +97,10 @@ function eventListeners(io) {
                 io.to(socket.id).emit("returned-room-data", false);
             }
         });
-        socket.on('send_message', (data) => {
-            const { message, username, roomid, } = data;
-            io.in(room).emit('receive_message', data); // Send to all users in room, including sender
+        socket.on('send-message', (data) => {
+            const { message, username, roomId } = data;
+            console.log(data)
+            io.in(roomId).emit('receive-message',data); // Send to all users in room, including sender
         
           });
         
