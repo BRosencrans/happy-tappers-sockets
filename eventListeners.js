@@ -97,7 +97,12 @@ function eventListeners(io) {
                 io.to(socket.id).emit("returned-room-data", false);
             }
         });
-
+        socket.on('send_message', (data) => {
+            const { message, username, roomid, } = data;
+            io.in(room).emit('receive_message', data); // Send to all users in room, including sender
+        
+          });
+        
         //game logic
         socket.on("start-game", (roomId) => {
             const memGame = new memGameManagment(rooms.getUsers(roomId));
